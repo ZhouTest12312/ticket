@@ -29,7 +29,7 @@ P1 adds an AI agent that **calls existing ticket HTTP APIs** (does not open the 
 - Human `interrupt` for high-risk writes
 - `close_ticket` / `delete_ticket` tools (close API exists; whole-ticket delete does not)
 - Modifying existing ticket frontend or its menus
-- Jev / advanced intent router
+- Jev / advanced intent router（**P2 必做**，见 Follow-on；P1 不实现）
 
 ## Architecture
 
@@ -219,9 +219,16 @@ Leave a clear module boundary so P2 can insert a router / `interrupt` without ch
 
 | Phase | Focus |
 |-------|--------|
-| P2 | High-risk tools + `interrupt` human confirm; retries/circuit patterns |
+| P2 | **Required:** Jev as pre-decision node (intent routing + risk classification) to cut LLM JSON hallucination; high-risk tools (`close_ticket`, etc.) + LangGraph `interrupt` human confirm; retries / circuit patterns for tools |
 | P3 | RAG (PGVector hybrid retrieval), Langfuse, Golden tests |
 | P4 | Optional embed into ticket UI or Nginx `/agent-api` / `/langfuse` production wiring |
+
+### P2 Jev (mandatory)
+
+- Place Jev **before** the ReAct / tool loop as a structured decision node.
+- Responsibilities: intent route (chat / ticket query / note / high-risk write) and risk level (low / needs_human).
+- High-risk path must go through `interrupt`; model must not execute close/delete unaided.
+- P1 ReAct module boundary must stay swappable so P2 can insert Jev without changing `/agent-api/chat` HTTP contract.
 
 ## Decisions log
 
@@ -235,3 +242,4 @@ Leave a clear module boundary so P2 can insert a router / `interrupt` without ch
 | Chat UI shape | Dedicated chat page (not floating drawer) |
 | Persistence | MemorySaver + client `threadId` |
 | Auth | Forward ticket JWT; validate via `/api/auth/me` |
+| Jev | Not in P1; **required in P2** as pre-router + risk gate |
