@@ -1,0 +1,38 @@
+.DS_Store
+node_modules
+/dist
+/dist-ssr
+dist.zip
+dist.txt
+.qoder
+.cursor
+.history
+
+# # local env files
+# .env.local
+# .env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log
+.eslintcache
+package-lock.json
+yarn.lock
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history/*
+
+# SDD scratch / worktrees
+.worktrees/
+.superpowers/
+
